@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int Item;
+
+#define less(A,B) (A < B)
+
+#define exch(A,B) {Item tt = A; \
+                   A = B; \
+                   B = tt;}
+
+#define cmpexch(A,B) {if(less(A,B)) exch(A,B)}
+
+int separa(Item *v, int l, int r){
+    int i = l-1, j = r;
+    Item p = v[r];
+    for(;;){
+        while(less(v[++i], p));
+        while(less(p, v[--j])) if(j == l) break;
+        if(i >= j) break;
+        exch(v[i], v[j]);
+    }
+    exch(v[i], v[r]);
+    return i;
+}
+
+void quickSortM3(Item *v, int l, int r){
+    if(l >= r) return;
+    int med = (r-l)/2 + l;
+    exch(v[med], v[r-1]);
+    cmpexch(v[r], v[l]);
+    cmpexch(v[r-1], v[l]);
+    cmpexch(v[r], v[r-1]);
+    int j = separa(v, l, r);
+    quickSortM3(v, l, j-1);
+    quickSortM3(v, j+1, r);
+}
+
+int main(){
+    int n;
+    Item *vetor;
+    scanf("%d", &n);
+    vetor = (Item*) malloc(sizeof(Item)*n);
+    for(int i = 0; i < n; i++){
+        scanf("%d", &vetor[i]);
+    }
+    quickSortM3(vetor, 0, n-1);
+    for(int i = 0; i < n-1; i++){
+        printf("%d ", vetor[i]);
+    }
+    printf("%d\n", vetor[n-1]);
+    return 0;
+}
